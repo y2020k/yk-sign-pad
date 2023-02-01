@@ -10,10 +10,18 @@ remark:签名模块
 <script lang="ts" setup>
 import { ref } from "vue";
 
+type btnType = 'back' | 'redo' | 'clear';
+
 const props = withDefaults(defineProps<{
-  btnHeight?: number;
+  height?: number; // PC端默认高度500
+  btnHeight?: number; // 按钮工具栏高度默认54
+  zIndex?: number; // 所在层级
+  btns?: btnType[] | btnType | 'all'; // 使用哪些按钮
 }>(), {
-  btnHeight: 54, // 按钮工具栏高度默认54
+  height: 500,
+  btnHeight: 54,
+  zIndex: 101,
+  btns: 'all',
 });
 
 const emit = defineEmits<{
@@ -291,6 +299,16 @@ function handleOverwrite() {
 
 const img = ref("");
 
+// 是否包含撤回按钮
+const checkType = (type: btnType | 'all' = 'all') => {
+  if (type === 'all') return true
+  else if (typeof props.btns === 'string')
+    return props.btns === 'all' || props.btns === type;
+  else if (Array.isArray(props.btns))
+    return props.btns.includes(type);
+  else return true;
+};
+
 // 生成图片
 function generatePicture() {
   if (canvasF.value) {
@@ -307,17 +325,20 @@ onMounted(() => {
 <template>
   <div class="SignPad">
     <div class="btn-group">
-      <a-button :disabled="step<0" class="back" @click="handleGoBack">撤回
+      <a-button
+        v-show="checkType('back')" :disabled="step<0" class="back" @click="handleGoBack">撤回
       </a-button>
-      <a-button :disabled="step>=maxStep" class="redo" @click="handleRedo">
+      <a-button
+        v-show="checkType('redo')" :disabled="step>=maxStep" class="redo" @click="handleRedo">
         重做
       </a-button>
       <a-button
+        v-show="checkType('clear')"
         :disabled="step===-1||isClear"
         class="rewrite"
         @click="handleOverwrite">清空
       </a-button>
-      <a-button class="submit" @click="generatePicture">确认</a-button>
+      <a-button v-show="checkType" class="submit" @click="generatePicture">确认</a-button>
     </div>
     <div ref="canvasHW" class="canvasBox">
       <canvas
@@ -342,8 +363,8 @@ onMounted(() => {
 .SignPad {
   position: relative;
   width: 100%;
-  height: 500px;
-  z-index: 101;
+  height: calc(v-bind(height) * 1px);
+  z-index: v-bind(zIndex);
 
   .btn-group {
     position: absolute;
