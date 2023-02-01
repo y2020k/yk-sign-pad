@@ -1,11 +1,23 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import SignPad from "@components/SignPad.vue";
+
+const showSign = ref(false);
+
+const signImg = ref("");
+
+function getImg(img: string) {
+  showSign.value = false;
+  signImg.value = img;
+}
 </script>
 
 <template>
-  <div>基础模板</div>
+  <img v-if="signImg" :src="signImg" alt="" />
+  <a-button @click="showSign=true">签名</a-button>
+  <SignPad v-if="showSign" @buildImg="getImg"></SignPad>
 </template>
 
-<style>
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -13,5 +25,9 @@
   text-align: center;
   color: #333;
   margin-top: 60px;
+
+  img{
+    max-width: 100%;
+  }
 }
 </style>
