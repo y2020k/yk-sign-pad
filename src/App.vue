@@ -1,13 +1,20 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { message } from "ant-design-vue";
+import 'ant-design-vue/es/message/style/index.css'
 
 const showSign = ref(false);
 
 const signImg = ref("");
 
-function getImg(img: string) {
-  showSign.value = false;
-  signImg.value = img;
+function getImg(result: Promise<string>) {
+  result.then((img)=>{
+    showSign.value = false;
+    signImg.value = img;
+  })
+    .catch((err)=>{
+      message.error(err);
+    });
 }
 </script>
 

@@ -98,12 +98,12 @@ export default defineConfig({
     rollupOptions: {
       external: [
         "vue",
-        // "ant-design-vue"
+        "ant-design-vue"
       ],
       output: {
         globals: {
           vue: "Vue",
-         // "ant-design-vue": "AntDesignVue",
+         "ant-design-vue": "AntDesignVue",
         },
       },
     },

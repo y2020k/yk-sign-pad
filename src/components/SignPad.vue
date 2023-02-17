@@ -9,7 +9,7 @@ remark:签名模块
 
 <script lang="ts" setup>
 import { ref, shallowRef, onMounted, nextTick } from "vue";
-import {Button as AButton} from "ant-design-vue";
+import { Button as AButton } from "ant-design-vue";
 
 type btnType = 'back' | 'redo' | 'clear';
 
@@ -26,14 +26,14 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-  (_p: 'buildImg', _v: string): void;
+  (_p: 'buildImg', _v: Promise<string>): void;
 }>();
 
 // canvas 外部盒子对象实例
 const canvasHW = ref<any>(null);
 // canvas 对象实例
 const canvasF = ref<HTMLCanvasElement | null>(null);
-// 历史路径点数组
+// 历史路径图像数组
 const points = ref<any[]>([]);
 // canvas 的 context 对象
 const canvasTxt = shallowRef<any>(null);
@@ -91,9 +91,6 @@ function initCanvas() {
 // 鼠标按下事件 - 准备绘画
 function mouseDown(ev: MouseEvent) {
   ev.preventDefault();
-  step.value++;
-  maxStep.value = step.value;
-  isClear.value = false;
   if (ev) {
     let obj = {
       x: ev.offsetX,
@@ -171,6 +168,12 @@ function mouseEnter(ev: MouseEvent) {
 // 松开鼠标事件 - 停止绘画
 function mouseUp(ev: MouseEvent) {
   ev.preventDefault();
+  if (!isClear.value) {
+    step.value++;
+    maxStep.value = step.value;
+  }
+  else
+    isClear.value = false;
   if (ev) {
     const element: HTMLElement = ev.target as HTMLElement;
     if (element) {
@@ -194,9 +197,6 @@ function mouseUp(ev: MouseEvent) {
 // 移动端按下事件 - 准备绘画
 function touchStart(ev: TouchEvent) {
   ev.preventDefault();
-  step.value++;
-  maxStep.value = step.value;
-  isClear.value = false;
   if (ev && ev.changedTouches[0]) {
     let obj = {
       y: stage_info.value.width - ev.changedTouches[0].clientX + stage_info.value.left,
@@ -238,6 +238,12 @@ function touchMove(ev: TouchEvent) {
 // 移动端松开事件 - 停止绘画
 function touchEnd(ev: TouchEvent) {
   ev.preventDefault();
+  if (!isClear.value) {
+    step.value++;
+    maxStep.value = step.value;
+  }
+  else
+    isClear.value = false;
   if (ev && ev.changedTouches[0]) {
     let obj = {
       y: stage_info.value.width - ev.changedTouches[0].clientX + stage_info.value.left,
@@ -304,10 +310,13 @@ const checkType = (type: btnType | 'all' = 'all') => {
 
 // 生成图片
 function generatePicture() {
-  if (canvasF.value) {
-    img.value = canvasF.value.toDataURL();
-    emit('buildImg', img.value);
-  }
+  emit('buildImg', new Promise((resolve, reject) => {
+    if (step.value === -1 || isClear.value) reject('请先签名！');
+    if (canvasF.value) {
+      img.value = canvasF.value.toDataURL();
+      resolve(img.value);
+    }
+  }));
 }
 
 onMounted(() => {
