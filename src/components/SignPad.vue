@@ -316,6 +316,7 @@ function generatePicture() {
       img.value = canvasF.value.toDataURL();
       resolve(img.value);
     }
+    reject('获取canvas对象失败！')
   }));
 }
 

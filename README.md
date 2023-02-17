@@ -12,3 +12,44 @@
 |  zIndex   |  盒子层级  |                             number                             |  否   |    101    |
 | btnHeight | 按钮组的高度 |                             number                             |  否   |    54     |
 |   btns    |  按钮组   | Array<`'back'丨'redo'丨'clear'`>丨`'back'丨'redo'丨'clear'`丨`'all'` |  否   |  `'all'`  |
+
+## 方法
+
+| 函数名       | 参数类型              | 说明                 |
+|-----------|-------------------|--------------------|
+| @buildImg | Promise\<string\> | 成功返回图片字符串，失败返回错误提示 |
+
+### 使用方式
+#### 在`main.ts`中引入
+```ts
+import SignPad from "@/typings";
+
+createApp(App)
+  .use(SignPad)
+  .mount('#app');
+```
+
+#### 在*.vue文件使用
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { message } from "ant-design-vue";
+import 'ant-design-vue/es/message/style/index.css'
+
+const signImg = ref("");
+
+function getImg(result: Promise<string>) {
+  result.then((img)=>{
+    signImg.value = img;
+  })
+    .catch((err)=>{
+      message.error(err);
+    });
+}
+</script>
+
+<template>
+  <img v-if="signImg" :src="signImg" alt="" />
+  <YkSignPad @buildImg="getImg"></YkSignPad>
+</template>
+```
