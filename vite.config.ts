@@ -16,6 +16,8 @@ import IconsResolver from 'unplugin-icons/resolver';
 import Icons from 'unplugin-icons/vite';
 // 自动生成.d.ts文件
 import dts from 'vite-plugin-dts';
+// 将打包的css插入js
+import VitePluginStyleMove from "./plugins/VitePluginStyleMove";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -57,6 +59,7 @@ export default defineConfig({
       autoInstall: true,
     }),*/
     dts(),
+    VitePluginStyleMove(),
   ],
   // 自定义路径
   resolve: {
@@ -95,12 +98,12 @@ export default defineConfig({
     rollupOptions: {
       external: [
         "vue",
-        "ant-design-vue"
+        // "ant-design-vue"
       ],
       output: {
         globals: {
           vue: "Vue",
-         "ant-design-vue": "AntDesignVue",
+         // "ant-design-vue": "AntDesignVue",
         },
       },
     },

@@ -1,7 +1,7 @@
 {
   "name": "@yuke_2022/yk-sign-pad",
   "private": false,
-  "version": "0.0.0-beta.10",
+  "version": "0.0.1",
   "type": "module",
   "author": "1140566120@qq.com",
   "main": "./lib/yk-sign-pad.umd.js",
@@ -11,7 +11,7 @@
     "@yuke_2022/yk-sign-pad"
   ],
   "license": "ISC",
-  "types": "lib/typings/index.d.ts",
+  "types": "./lib/typings/index.d.ts",
   "files": [
     "./lib/**/*",
     "readme.md",

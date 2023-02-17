@@ -317,6 +317,18 @@ onMounted(() => {
 
 <template>
   <div class="SignPad">
+    <div ref="canvasHW" class="canvasBox">
+      <canvas
+        id="SignPad"
+        ref="canvasF"
+        @mousedown.prevent="mouseDown"
+        @mousemove.prevent="mouseMove"
+        @mouseout.prevent="mouseOut"
+        @mouseenter.prevent="mouseEnter"
+        @touchstart.prevent="touchStart"
+        @touchmove.prevent="touchMove"
+        @touchend.prevent="touchEnd"></canvas>
+    </div>
     <div class="btn-group">
       <a-button
         v-show="checkType('back')"
@@ -340,18 +352,6 @@ onMounted(() => {
       <a-button v-show="checkType" class="submit" @click="generatePicture">
         确认
       </a-button>
-    </div>
-    <div ref="canvasHW" class="canvasBox">
-      <canvas
-        id="SignPad"
-        ref="canvasF"
-        @mousedown.prevent="mouseDown"
-        @mousemove.prevent="mouseMove"
-        @mouseout.prevent="mouseOut"
-        @mouseenter.prevent="mouseEnter"
-        @touchstart.prevent="touchStart"
-        @touchmove.prevent="touchMove"
-        @touchend.prevent="touchEnd"></canvas>
     </div>
     <!--    <img
           :src="img"
