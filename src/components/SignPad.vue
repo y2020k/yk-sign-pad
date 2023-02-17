@@ -8,7 +8,8 @@ remark:签名模块
 -->
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, shallowRef, onMounted, nextTick } from "vue";
+import {Button as AButton} from "ant-design-vue";
 
 type btnType = 'back' | 'redo' | 'clear';
 
@@ -89,7 +90,6 @@ function initCanvas() {
 
 // 鼠标按下事件 - 准备绘画
 function mouseDown(ev: MouseEvent) {
-  ev = ev || event;
   ev.preventDefault();
   step.value++;
   maxStep.value = step.value;
@@ -113,7 +113,6 @@ function mouseDown(ev: MouseEvent) {
 
 // 鼠标移动事件 - 开始绘画
 function mouseMove(ev: MouseEvent) {
-  ev = ev || event;
   ev.preventDefault();
   if (isDown.value) {
     let obj = {
@@ -136,7 +135,6 @@ function mouseMove(ev: MouseEvent) {
 
 // 鼠标移出边界事件 - 中止绘画
 function mouseOut(ev: MouseEvent) {
-  ev = ev || event;
   ev.preventDefault();
   if (isDown.value) {
     let obj = {
@@ -159,7 +157,6 @@ function mouseOut(ev: MouseEvent) {
 
 // 鼠标移入边界事件 - 继续绘画
 function mouseEnter(ev: MouseEvent) {
-  ev = ev || event;
   ev.preventDefault();
   if (isDown.value) {
     let obj = {
@@ -173,7 +170,6 @@ function mouseEnter(ev: MouseEvent) {
 
 // 松开鼠标事件 - 停止绘画
 function mouseUp(ev: MouseEvent) {
-  ev = ev || event;
   ev.preventDefault();
   if (ev) {
     const element: HTMLElement = ev.target as HTMLElement;
@@ -197,12 +193,11 @@ function mouseUp(ev: MouseEvent) {
 
 // 移动端按下事件 - 准备绘画
 function touchStart(ev: TouchEvent) {
-  ev = ev || event;
   ev.preventDefault();
   step.value++;
   maxStep.value = step.value;
   isClear.value = false;
-  if (ev) {
+  if (ev && ev.changedTouches[0]) {
     let obj = {
       y: stage_info.value.width - ev.changedTouches[0].clientX + stage_info.value.left,
       x: ev.changedTouches[0].clientY - stage_info.value.top
@@ -220,9 +215,8 @@ function touchStart(ev: TouchEvent) {
 
 // 移动端移动事件 - 开始绘画
 function touchMove(ev: TouchEvent) {
-  ev = ev || event;
   ev.preventDefault();
-  if (isDown.value) {
+  if (isDown.value && ev.changedTouches[0]) {
     let obj = {
       y: stage_info.value.width - ev.changedTouches[0].clientX + stage_info.value.left,
       x: ev.changedTouches[0].clientY - stage_info.value.top
@@ -243,9 +237,8 @@ function touchMove(ev: TouchEvent) {
 
 // 移动端松开事件 - 停止绘画
 function touchEnd(ev: TouchEvent) {
-  ev = ev || event;
   ev.preventDefault();
-  if (ev) {
+  if (ev && ev.changedTouches[0]) {
     let obj = {
       y: stage_info.value.width - ev.changedTouches[0].clientX + stage_info.value.left,
       x: ev.changedTouches[0].clientY - stage_info.value.top
@@ -301,7 +294,7 @@ const img = ref("");
 
 // 是否包含撤回按钮
 const checkType = (type: btnType | 'all' = 'all') => {
-  if (type === 'all') return true
+  if (type === 'all') return true;
   else if (typeof props.btns === 'string')
     return props.btns === 'all' || props.btns === type;
   else if (Array.isArray(props.btns))
@@ -326,10 +319,16 @@ onMounted(() => {
   <div class="SignPad">
     <div class="btn-group">
       <a-button
-        v-show="checkType('back')" :disabled="step<0" class="back" @click="handleGoBack">撤回
+        v-show="checkType('back')"
+        :disabled="step<0"
+        class="back"
+        @click="handleGoBack">撤回
       </a-button>
       <a-button
-        v-show="checkType('redo')" :disabled="step>=maxStep" class="redo" @click="handleRedo">
+        v-show="checkType('redo')"
+        :disabled="step>=maxStep"
+        class="redo"
+        @click="handleRedo">
         重做
       </a-button>
       <a-button
@@ -338,7 +337,9 @@ onMounted(() => {
         class="rewrite"
         @click="handleOverwrite">清空
       </a-button>
-      <a-button v-show="checkType" class="submit" @click="generatePicture">确认</a-button>
+      <a-button v-show="checkType" class="submit" @click="generatePicture">
+        确认
+      </a-button>
     </div>
     <div ref="canvasHW" class="canvasBox">
       <canvas

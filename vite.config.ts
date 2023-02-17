@@ -14,6 +14,8 @@ import {
 // 自动引入图标库
 import IconsResolver from 'unplugin-icons/resolver';
 import Icons from 'unplugin-icons/vite';
+// 自动生成.d.ts文件
+import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -34,7 +36,7 @@ export default defineConfig({
       //为true时在项目根目录自动创建
       dts: './auto-imports.d.ts',
     }),
-    Components({
+    /*Components({
       resolvers: [
         // 自动注册图标组件
         IconsResolver({
@@ -53,7 +55,8 @@ export default defineConfig({
     }),
     Icons({
       autoInstall: true,
-    }),
+    }),*/
+    dts(),
   ],
   // 自定义路径
   resolve: {
@@ -82,11 +85,25 @@ export default defineConfig({
   base: './', // 打包后的路径
   // 打包配置
   build: {
-    // target: 'es2015',
-    target: 'modules',
-    outDir: 'dist',
-    assetsDir: 'assets',
-    minify: 'terser',
+    outDir: "lib",
+    lib: {
+      entry: resolve(__dirname, "src/typings/index.ts"),
+      name: "yk-sign-pad",
+      fileName: "yk-sign-pad",
+      // formats: ["es", "cjs"],
+    },
+    rollupOptions: {
+      external: [
+        "vue",
+        "ant-design-vue"
+      ],
+      output: {
+        globals: {
+          vue: "Vue",
+         "ant-design-vue": "AntDesignVue",
+        },
+      },
+    },
   },
   // 代理
   server: {

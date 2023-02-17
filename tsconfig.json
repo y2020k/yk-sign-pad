@@ -1,44 +1,83 @@
 {
+  "files": [
+    "./src/typings/index.ts"
+  ],
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "declaration": true,
+    "outDir": "./lib",
+    "noEmit": false,
     "strict": true,
-    "jsx": "preserve",
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "lib": [
       "esnext",
       "dom"
     ],
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
-      "@images/*": ["src/assets/images/*"],
-      "@ts/*": ["src/assets/ts/*"],
-      "@types": ["src/types"],
-      "@utils/*": ["src/utils/*"],
-      "@store/*": ["src/store/*"],
-      "@components/*": ["src/components/*"],
-      "@css/*": ["src/assets/css/*"],
-      "@views/*": ["src/views/*"],
-      "api/*": ["src/api/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@images/*": [
+        "src/assets/images/*"
+      ],
+      "@ts/*": [
+        "src/assets/ts/*"
+      ],
+      "@types": [
+        "src/types"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@store/*": [
+        "src/store/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@css/*": [
+        "src/assets/css/*"
+      ],
+      "@views/*": [
+        "src/views/*"
+      ],
+      "api/*": [
+        "src/api/*"
+      ]
     }
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue",
-    "./auto-imports.d.ts"
+    "src/components/**/*.vue",
   ],
   "references": [
     {
       "path": "./tsconfig.node.json"
     }
+  ],
+  "types": [
+    "vite/client"
   ]
 }
