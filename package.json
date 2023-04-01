@@ -6,8 +6,13 @@
   "author": "1140566120@qq.com",
   "main": "./lib/yk-sign-pad.umd.js",
   "module": "./lib/yk-sign-pad.es.js",
-  "description": "signPad, PC and mobile, @yuke_2022/yk-sign-pad",
+  "description": "SignPad can use for PC and mobile",
   "keywords": [
+    "signPad",
+    "PC",
+    "mobile",
+    "签名",
+    "签名板",
     "@yuke_2022/yk-sign-pad"
   ],
   "license": "ISC",
