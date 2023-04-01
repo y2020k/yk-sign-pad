@@ -15,6 +15,10 @@
     "签名板",
     "@yuke_2022/yk-sign-pad"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/y2020k/yk-sign-pad.git"
+  },
   "license": "ISC",
   "types": "./lib/typings/index.d.ts",
   "files": [
