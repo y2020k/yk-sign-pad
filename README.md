@@ -53,3 +53,7 @@ function getImg(result: Promise<string>) {
   <YkSignPad @buildImg="getImg"></YkSignPad>
 </template>
 ```
+
+## 相关地址
+### [Github](https://github.com/y2020k/yk-sign-pad)
+### [npm](https://www.npmjs.com/package/@yuke_2022/yk-sign-pad)
