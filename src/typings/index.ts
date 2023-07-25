@@ -7,20 +7,19 @@ author:俞棵
 remark:
 */
 
-import SignPad from "../components/SignPad.vue";
-import "@vue/runtime-core";
+import YkSignPad from "../components/SignPad.vue";
 import { App, Plugin as Plugin_2 } from "vue";
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    YkSignPad: typeof SignPad,
+    YkSignPad: typeof YkSignPad,
   }
 }
 
-export {
-  SignPad as YkSignPad
-}
+export { YkSignPad };
 
-export default {
-  install: (app: App) => app.component('YkSignPad', SignPad as unknown as Plugin_2),
+const installer = {
+  install: (app: App) => app.component('YkSignPad', YkSignPad as unknown as Plugin_2),
 };
+
+export default installer;

@@ -1,27 +1,9 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { message } from "ant-design-vue";
-import 'ant-design-vue/es/message/style/index.css'
-
-const showSign = ref(false);
-
-const signImg = ref("");
-
-function getImg(result: Promise<string>) {
-  result.then((img)=>{
-    showSign.value = false;
-    signImg.value = img;
-  })
-    .catch((err)=>{
-      message.error(err);
-    });
-}
 </script>
 
 <template>
-  <img v-if="signImg" :src="signImg" alt="" />
-  <a-button @click="showSign=true">签名</a-button>
-  <YkSignPad v-if="showSign" @buildImg="getImg"></YkSignPad>
+  <div>
+  </div>
 </template>
 
 <style lang="scss">

@@ -1,11 +1,11 @@
 {
   "name": "@yuke_2022/yk-sign-pad",
   "private": false,
-  "version": "0.0.6",
+  "version": "0.0.18",
   "type": "module",
   "author": "1140566120@qq.com",
-  "main": "./lib/yk-sign-pad.umd.js",
-  "module": "./lib/yk-sign-pad.es.js",
+  "main": "./lib/src/typings/index.js",
+  "module": "./es/src/typings/index.mjs",
   "description": "SignPad can use for PC and mobile",
   "keywords": [
     "signPad",
@@ -20,18 +20,18 @@
     "url": "https://github.com/y2020k/yk-sign-pad.git"
   },
   "license": "ISC",
-  "types": "./lib/typings/index.d.ts",
+  "types": "./lib/src/typings/index.d.ts",
   "files": [
+    "./es/**/*",
     "./lib/**/*",
     "readme.md",
     "package.json"
   ],
   "exports": {
     ".": {
-      "import": "./lib/yk-sign-pad.es.js",
-      "require": "./lib/yk-sign-pad.umd.js"
-    },
-    "./lib/style.css": "./lib/style.css"
+      "import": "./es/src/typings/index.mjs",
+      "require": "./lib/src/typings/index.js"
+    }
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
@@ -44,13 +44,11 @@
   },
   "dependencies": {
     "amfe-flexible": "^2.2.1",
-    "ant-design-vue": "^3.2.6",
     "lodash": "^4.17.21",
     "postcss": "^8.4.14",
     "postcss-pxtorem": "^6.0.0",
     "sass": "^1.52.3",
-    "ts-node": "^10.8.1",
-    "vue": "^3.2.25"
+    "ts-node": "^10.8.1"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
@@ -59,8 +57,10 @@
     "unplugin-auto-import": "^0.13.0",
     "unplugin-icons": "^0.15.2",
     "unplugin-vue-components": "^0.23.0",
-    "vite": "^2.9.9",
+    "vite": "2.9.16",
     "vite-plugin-dts": "^1.7.3",
-    "vue-tsc": "^0.34.7"
+    "vue-tsc": "^0.34.7",
+    "vue": "^3.2.25",
+    "ant-design-vue": "^3.2.6"
   }
 }

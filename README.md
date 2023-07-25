@@ -22,7 +22,7 @@
 ### 使用方式
 #### 在`main.ts`中引入
 ```ts
-import SignPad from "@/typings";
+import SignPad from "@yuke_2022/yk-sign-pad";
 
 createApp(App)
   .use(SignPad)

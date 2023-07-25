@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 // 需要安装 @types/node
 import { resolve } from 'path';
 // 引入按需引入插件
@@ -58,7 +58,10 @@ export default defineConfig({
     Icons({
       autoInstall: true,
     }),*/
-    dts(),
+    dts({
+      entryRoot: "./src",
+      outputDir: ["./es/src", "./lib/src"],
+    }),
     VitePluginStyleMove(),
   ],
   // 自定义路径
@@ -88,24 +91,50 @@ export default defineConfig({
   base: './', // 打包后的路径
   // 打包配置
   build: {
-    outDir: "lib",
+    outDir: "dist",
     lib: {
       entry: resolve(__dirname, "src/typings/index.ts"),
-      name: "yk-sign-pad",
-      fileName: "yk-sign-pad",
-      // formats: ["es", "cjs"],
+      name: "dist",
+      fileName: "dist",
+      formats: ["es", "umd", "cjs"],
     },
     rollupOptions: {
       external: [
         "vue",
         "ant-design-vue"
       ],
-      output: {
-        globals: {
-          vue: "Vue",
-         "ant-design-vue": "AntDesignVue",
+      output: [
+        {
+          //打包格式
+          format: "es",
+          //打包后文件名
+          entryFileNames: "[name].mjs",
+          //让打包目录和我们目录对应
+          preserveModules: true,
+          exports: "named",
+          //配置打包根目录
+          dir: "./es",
+          globals: {
+            vue: "Vue",
+            "ant-design-vue": "AntDesignVue",
+          },
         },
-      },
+        {
+          //打包格式
+          format: "cjs",
+          //打包后文件名
+          entryFileNames: "[name].js",
+          //让打包目录和我们目录对应
+          preserveModules: true,
+          exports: "named",
+          //配置打包根目录
+          dir: "./lib",
+          globals: {
+            vue: "Vue",
+            "ant-design-vue": "AntDesignVue",
+          },
+        },
+      ]
     },
   },
   // 代理
@@ -130,7 +159,7 @@ export default defineConfig({
       },
     },
   },
-})
+});
 
 /**
  * 配置路径

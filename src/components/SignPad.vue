@@ -10,6 +10,7 @@ remark:签名模块
 <script lang="ts" setup>
 import { ref, shallowRef, onMounted, nextTick } from "vue";
 import { Button as AButton } from "ant-design-vue";
+import 'ant-design-vue/es/button/style/index.css';
 
 type btnType = 'back' | 'redo' | 'clear';
 
@@ -30,7 +31,7 @@ const emit = defineEmits<{
 }>();
 
 // canvas 外部盒子对象实例
-const canvasHW = ref<any>(null);
+const canvasHW = ref<HTMLDivElement | null>(null);
 // canvas 对象实例
 const canvasF = ref<HTMLCanvasElement | null>(null);
 // 历史路径图像数组
@@ -38,7 +39,7 @@ const points = ref<any[]>([]);
 // canvas 的 context 对象
 const canvasTxt = shallowRef<any>(null);
 // canvas 与视图的上下左右的距离及自身尺寸
-const stage_info = ref<any>([]);
+const stage_info = ref<DOMRect | null>(null);
 // 每一部分的线段绘画开始位置的 x 坐标
 const startX = ref(0);
 // 每一部分的线段绘画开始位置的 y 坐标
@@ -66,7 +67,7 @@ const isClear = ref(false);
 function initCanvas() {
   let canvas = canvasF.value;
   nextTick(() => {
-    if (canvas) {
+    if (canvas && canvasHW.value) {
       isRotate.value = canvasHW.value.offsetWidth <= canvasHW.value.offsetHeight;
       if (isRotate.value) {
         // 获取画布的高度
@@ -199,8 +200,8 @@ function touchStart(ev: TouchEvent) {
   ev.preventDefault();
   if (ev && ev.changedTouches[0]) {
     let obj = {
-      y: stage_info.value.width - ev.changedTouches[0].clientX + stage_info.value.left,
-      x: ev.changedTouches[0].clientY - stage_info.value.top
+      y: (stage_info.value?.width ?? 0) - ev.changedTouches[0].clientX + (stage_info.value?.left ?? 0),
+      x: ev.changedTouches[0].clientY - (stage_info.value?.top ?? 0),
     };
     startX.value = obj.x;
     startY.value = obj.y;
@@ -218,8 +219,8 @@ function touchMove(ev: TouchEvent) {
   ev.preventDefault();
   if (isDown.value && ev.changedTouches[0]) {
     let obj = {
-      y: stage_info.value.width - ev.changedTouches[0].clientX + stage_info.value.left,
-      x: ev.changedTouches[0].clientY - stage_info.value.top
+      y: (stage_info.value?.width ?? 0) - ev.changedTouches[0].clientX + (stage_info.value?.left ?? 0),
+      x: ev.changedTouches[0].clientY - (stage_info.value?.top ?? 0)
     };
     moveY.value = obj.y;
     moveX.value = obj.x;
@@ -246,8 +247,8 @@ function touchEnd(ev: TouchEvent) {
     isClear.value = false;
   if (ev && ev.changedTouches[0]) {
     let obj = {
-      y: stage_info.value.width - ev.changedTouches[0].clientX + stage_info.value.left,
-      x: ev.changedTouches[0].clientY - stage_info.value.top
+      y: (stage_info.value?.width ?? 0) - ev.changedTouches[0].clientX + (stage_info.value?.left ?? 0),
+      x: ev.changedTouches[0].clientY - (stage_info.value?.top ?? 0)
     };
     canvasTxt.value.beginPath();
     canvasTxt.value.moveTo(startX.value, startY.value);
@@ -293,7 +294,7 @@ function handleOverwrite() {
     isClear.value = true;
     step.value++;
   }
-  canvasTxt.value.clearRect(0, 0, canvasF.value?.width, canvasF.value?.height);
+  canvasTxt.value.clearRect(0, 0, canvasF.value?.width ?? 0, canvasF.value?.height ?? 0);
 }
 
 const img = ref("");
@@ -316,7 +317,7 @@ function generatePicture() {
       img.value = canvasF.value.toDataURL();
       resolve(img.value);
     }
-    reject('获取canvas对象失败！')
+    reject('获取canvas对象失败！');
   }));
 }
 
@@ -337,27 +338,31 @@ onMounted(() => {
         @mouseenter.prevent="mouseEnter"
         @touchstart.prevent="touchStart"
         @touchmove.prevent="touchMove"
-        @touchend.prevent="touchEnd"></canvas>
+        @touchend.prevent="touchEnd"
+      ></canvas>
     </div>
     <div class="btn-group">
       <a-button
         v-show="checkType('back')"
         :disabled="step<0"
         class="back"
-        @click="handleGoBack">撤回
+        @click="handleGoBack"
+      >撤回
       </a-button>
       <a-button
         v-show="checkType('redo')"
         :disabled="step>=maxStep"
         class="redo"
-        @click="handleRedo">
+        @click="handleRedo"
+      >
         重做
       </a-button>
       <a-button
         v-show="checkType('clear')"
         :disabled="step===-1||isClear"
         class="rewrite"
-        @click="handleOverwrite">清空
+        @click="handleOverwrite"
+      >清空
       </a-button>
       <a-button v-show="checkType" class="submit" @click="generatePicture">
         确认
