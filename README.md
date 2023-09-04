@@ -22,11 +22,16 @@
 ### 使用方式
 #### 在`main.ts`中引入
 ```ts
-import SignPad from "@yuke_2022/yk-sign-pad";
+import YkSignPad from "@yuke_2022/yk-sign-pad";
 
 createApp(App)
-  .use(SignPad)
+  .use(YkSignPad)
   .mount('#app');
+```
+
+#### 在`*.vue`中单独引入
+```ts
+import { YkSignPad } from "@yuke_2022/yk-sign-pad";
 ```
 
 #### 在*.vue文件使用
