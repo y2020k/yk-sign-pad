@@ -320,7 +320,6 @@ function generatePicture() {
     if (step.value === -1 || isClear.value) reject('请先签名！');
     if (canvasF.value) {
       img.value = canvasF.value.toDataURL();
-      console.log(img.value);
       resolve(img.value);
       return;
     }
