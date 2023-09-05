@@ -17,11 +17,13 @@ type btnType = 'back' | 'redo' | 'clear';
 const props = withDefaults(defineProps<{
   height?: number; // PC端默认高度500
   btnHeight?: number; // 按钮工具栏高度默认54
+  bgc?: string; // 初始化背景色
   zIndex?: number; // 所在层级
   btns?: btnType[] | btnType | 'all'; // 使用哪些按钮
 }>(), {
   height: 500,
   btnHeight: 54,
+  bgc: "#f5f5f5",
   zIndex: 101,
   btns: 'all',
 });
@@ -83,6 +85,9 @@ function initCanvas() {
       }
       // 创建 context 对象
       canvasTxt.value = canvas.getContext('2d');
+      canvasTxt.value.fillStyle = props.bgc ?? "#f5f5f5";
+      canvasTxt.value.fillRect(0, 0, canvas.width, canvas.height);
+      canvasTxt.value.fill();
       // canvas与视图的上下左右的距离及自身尺寸
       stage_info.value = canvas.getBoundingClientRect();
     }
@@ -315,7 +320,9 @@ function generatePicture() {
     if (step.value === -1 || isClear.value) reject('请先签名！');
     if (canvasF.value) {
       img.value = canvasF.value.toDataURL();
+      console.log(img.value);
       resolve(img.value);
+      return;
     }
     reject('获取canvas对象失败！');
   }));

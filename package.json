@@ -1,7 +1,7 @@
 {
   "name": "@yuke_2022/yk-sign-pad",
   "private": false,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "author": "1140566120@qq.com",
   "main": "./lib/src/typings/index.js",

@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import SignPad from "./components/SignPad.vue";
 </script>
 
 <template>
   <div>
+    <sign-pad></sign-pad>
   </div>
 </template>
 
