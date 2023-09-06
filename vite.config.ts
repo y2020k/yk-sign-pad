@@ -60,7 +60,7 @@ export default defineConfig({
     }),*/
     dts({
       entryRoot: "./src",
-      outputDir: ["./es/src", "./lib/src"],
+      outDir: ["./es/src", "./lib/src"],
     }),
     VitePluginStyleMove(),
   ],
@@ -96,7 +96,7 @@ export default defineConfig({
       entry: resolve(__dirname, "src/typings/index.ts"),
       name: "dist",
       fileName: "dist",
-      formats: ["es", "umd", "cjs"],
+      // formats: ["es", "umd", "cjs"],
     },
     rollupOptions: {
       external: [
