@@ -1,8 +1,9 @@
 ## 签名组件
 
-1. 适配了PC端和移动端，PC端高度为500， 移动端默认层级为101，
+1. 适配了PC端和移动端，PC端高度为500， 默认层级为101，
    按钮组高度默认为54
 2. 除直接生成签名图片外，还包含撤回、重做和清空的功能
+3. 追加了背景色、画笔颜色以及画笔宽度的配置
 
 ## 参数说明
 
@@ -11,6 +12,8 @@
 |  height   |  盒子高度  |                             number                             |  否   |  pc时有效：500  |
 |  zIndex   |  盒子层级  |                             number                             |  否   |     101     |
 |    bgc    |  背景色   |                             string                             |  否   | `'#f5f5f5'` |
+| penColor  |  画笔颜色  |                             string                             |  否   |  `'#000'`   |
+| penWidth  |  画笔宽度  |                         string丨number                          |  否   |      2      |
 | btnHeight | 按钮组的高度 |                             number                             |  否   |     54      |
 |   btns    |  按钮组   | Array<`'back'丨'redo'丨'clear'`>丨`'back'丨'redo'丨'clear'`丨`'all'` |  否   |   `'all'`   |
 

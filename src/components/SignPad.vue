@@ -17,12 +17,16 @@ type btnType = 'back' | 'redo' | 'clear';
 const props = withDefaults(defineProps<{
   height?: number; // PC端默认高度500
   btnHeight?: number; // 按钮工具栏高度默认54
+  penColor?: string; // 画笔颜色
+  penWidth?: number | string; // 画笔宽度
   bgc?: string; // 初始化背景色
   zIndex?: number; // 所在层级
   btns?: btnType[] | btnType | 'all'; // 使用哪些按钮
 }>(), {
   height: 500,
   btnHeight: 54,
+  penColor: "#000",
+  penWidth: 2,
   bgc: "#f5f5f5",
   zIndex: 101,
   btns: 'all',
@@ -53,9 +57,9 @@ const moveX = ref(0);
 // 是否按下
 const isDown = ref(false);
 // 画笔颜色
-const strokeStyle = ref('#000');
+// const strokeStyle = ref('#000');
 // 画笔宽度
-const lineWidth = ref(2);
+// const lineWidth = ref(2);
 // 是否旋转
 const isRotate = ref(false);
 // 当前步数
@@ -124,8 +128,8 @@ function mouseMove(ev: MouseEvent) {
     };
     moveY.value = obj.y;
     moveX.value = obj.x;
-    canvasTxt.value.strokeStyle = strokeStyle.value;
-    canvasTxt.value.lineWidth = lineWidth.value;
+    canvasTxt.value.strokeStyle = props.penColor;
+    canvasTxt.value.lineWidth = Number(props.penWidth) || 2;
     canvasTxt.value.beginPath();
     canvasTxt.value.moveTo(startX.value, startY.value);
     canvasTxt.value.lineTo(obj.x, obj.y);
@@ -146,8 +150,8 @@ function mouseOut(ev: MouseEvent) {
     };
     moveY.value = obj.y;
     moveX.value = obj.x;
-    canvasTxt.value.strokeStyle = strokeStyle.value;
-    canvasTxt.value.lineWidth = lineWidth.value;
+    canvasTxt.value.strokeStyle = props.penColor;
+    canvasTxt.value.lineWidth = Number(props.penWidth) || 2;
     canvasTxt.value.beginPath();
     canvasTxt.value.moveTo(startX.value, startY.value);
     canvasTxt.value.lineTo(obj.x, obj.y);
@@ -229,8 +233,8 @@ function touchMove(ev: TouchEvent) {
     };
     moveY.value = obj.y;
     moveX.value = obj.x;
-    canvasTxt.value.strokeStyle = strokeStyle.value;
-    canvasTxt.value.lineWidth = lineWidth.value;
+    canvasTxt.value.strokeStyle = props.penColor;
+    canvasTxt.value.lineWidth = Number(props.penWidth) || 2;
     canvasTxt.value.beginPath();
     canvasTxt.value.moveTo(startX.value, startY.value);
     canvasTxt.value.lineTo(obj.x, obj.y);
