@@ -8,9 +8,9 @@ remark:签名模块
 -->
 
 <script lang="ts" setup>
-import { ref, shallowRef, onMounted, nextTick } from "vue";
 import { Button as AButton } from "ant-design-vue";
 import 'ant-design-vue/es/button/style/index.css';
+import { nextTick, onMounted, ref, shallowRef } from "vue";
 
 type btnType = 'back' | 'redo' | 'clear';
 
@@ -42,6 +42,13 @@ const canvasHW = ref<HTMLDivElement | null>(null);
 const canvasF = ref<HTMLCanvasElement | null>(null);
 // 历史路径图像数组
 const points = ref<any[]>([]);
+// 历史路径图像数组
+const positions = ref<{
+  left: number;
+  top: number;
+  right: number;
+  bottom: number
+}[]>([]);
 // canvas 的 context 对象
 const canvasTxt = shallowRef<any>(null);
 // canvas 与视图的上下左右的距离及自身尺寸
@@ -69,6 +76,11 @@ let maxStep = ref(-1);
 // 是否清空
 const isClear = ref(false);
 
+let left = window.innerWidth;
+let right = 0;
+let top = window.innerHeight;
+let bottom = 0;
+
 // 初始化Canvas
 function initCanvas() {
   let canvas = canvasF.value;
@@ -94,6 +106,9 @@ function initCanvas() {
       canvasTxt.value.fill();
       // canvas与视图的上下左右的距离及自身尺寸
       stage_info.value = canvas.getBoundingClientRect();
+
+      left = canvas.width;
+      top = canvas.height;
     }
   });
 }
@@ -114,6 +129,12 @@ function mouseDown(ev: MouseEvent) {
     canvasTxt.value.stroke();
     canvasTxt.value.closePath();
     isDown.value = true;
+
+    left = Math.min(obj.x, left);
+    right = Math.max(obj.x, right);
+    top = Math.min(obj.y, top);
+    bottom = Math.max(obj.y, bottom);
+
     document.addEventListener("mouseup", mouseUp);
   }
 }
@@ -137,6 +158,11 @@ function mouseMove(ev: MouseEvent) {
     canvasTxt.value.closePath();
     startY.value = obj.y;
     startX.value = obj.x;
+
+    left = Math.min(obj.x, left);
+    right = Math.max(obj.x, right);
+    top = Math.min(obj.y, top);
+    bottom = Math.max(obj.y, bottom);
   }
 }
 
@@ -159,6 +185,11 @@ function mouseOut(ev: MouseEvent) {
     canvasTxt.value.closePath();
     startY.value = obj.y;
     startX.value = obj.x;
+
+    left = Math.min(obj.x, left);
+    right = Math.max(obj.x, right);
+    top = Math.min(obj.y, top);
+    bottom = Math.max(obj.y, bottom);
   }
 }
 
@@ -172,6 +203,11 @@ function mouseEnter(ev: MouseEvent) {
     };
     startY.value = obj.y;
     startX.value = obj.x;
+
+    left = Math.min(obj.x, left);
+    right = Math.max(obj.x, right);
+    top = Math.min(obj.y, top);
+    bottom = Math.max(obj.y, bottom);
   }
 }
 
@@ -197,7 +233,20 @@ function mouseUp(ev: MouseEvent) {
       canvasTxt.value.lineTo(obj.x, obj.y);
       canvasTxt.value.stroke();
       canvasTxt.value.closePath();
+
+
+      left = Math.min(obj.x, left);
+      right = Math.max(obj.x, right);
+      top = Math.min(obj.y, top);
+      bottom = Math.max(obj.y, bottom);
+
       points.value[step.value] = canvasF.value?.toDataURL();
+      positions.value[step.value] = {
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
+      };
       isDown.value = false;
       document.removeEventListener('mouseup', mouseUp);
     }
@@ -220,6 +269,11 @@ function touchStart(ev: TouchEvent) {
     canvasTxt.value.stroke();
     canvasTxt.value.closePath();
     isDown.value = true;
+
+    left = Math.min(obj.x, left);
+    right = Math.max(obj.x, right);
+    top = Math.min(obj.y, top);
+    bottom = Math.max(obj.y, bottom);
   }
 }
 
@@ -242,6 +296,11 @@ function touchMove(ev: TouchEvent) {
     canvasTxt.value.closePath();
     startY.value = obj.y;
     startX.value = obj.x;
+
+    left = Math.min(obj.x, left);
+    right = Math.max(obj.x, right);
+    top = Math.min(obj.y, top);
+    bottom = Math.max(obj.y, bottom);
   }
 }
 
@@ -264,7 +323,19 @@ function touchEnd(ev: TouchEvent) {
     canvasTxt.value.lineTo(obj.x, obj.y);
     canvasTxt.value.stroke();
     canvasTxt.value.closePath();
+
+    left = Math.min(obj.x, left);
+    right = Math.max(obj.x, right);
+    top = Math.min(obj.y, top);
+    bottom = Math.max(obj.y, bottom);
+
     points.value[step.value] = canvasF.value?.toDataURL();
+    positions.value[step.value] = {
+      left: left,
+      top: top,
+      right: right,
+      bottom: bottom,
+    };
     isDown.value = false;
   }
 }
@@ -279,6 +350,12 @@ function handleGoBack() {
   canvasTxt.value?.clearRect(0, 0, canvasF.value?.width, canvasF.value?.height);
   let canvasPic = new Image();
   canvasPic.src = points.value[step.value];
+
+  left = positions.value[step.value]?.left ?? canvasF.value?.width ?? window.innerWidth;
+  top = positions.value[step.value]?.top ?? canvasF.value?.height ?? window.innerHeight;
+  right = positions.value[step.value]?.right ?? 0;
+  bottom = positions.value[step.value]?.bottom ?? 0;
+
   canvasPic.addEventListener('load', () => {
     canvasTxt.value?.drawImage(canvasPic, 0, 0);
   });
@@ -291,6 +368,12 @@ function handleRedo() {
   canvasTxt.value?.clearRect(0, 0, canvasF.value?.width, canvasF.value?.height);
   let canvasPic = new Image();
   canvasPic.src = points.value[step.value];
+
+  left = positions.value[step.value]?.left ?? canvasF.value?.width ?? window.innerWidth;
+  top = positions.value[step.value]?.top ?? canvasF.value?.height ?? window.innerHeight;
+  right = positions.value[step.value]?.right ?? 0;
+  bottom = positions.value[step.value]?.bottom ?? 0;
+
   canvasPic.addEventListener('load', () => {
     canvasTxt.value?.drawImage(canvasPic, 0, 0);
   });
@@ -304,6 +387,10 @@ function handleOverwrite() {
     step.value++;
   }
   canvasTxt.value.clearRect(0, 0, canvasF.value?.width ?? 0, canvasF.value?.height ?? 0);
+  left = canvasF.value?.width ?? window.innerWidth;
+  top = canvasF.value?.height ?? window.innerHeight;
+  right = 0;
+  bottom = 0;
 }
 
 const img = ref("");
@@ -323,8 +410,29 @@ function generatePicture() {
   emit('buildImg', new Promise((resolve, reject) => {
     if (step.value === -1 || isClear.value) reject('请先签名！');
     if (canvasF.value) {
+      let canvasPic = new Image();
+      canvasPic.src = points.value[step.value];
       img.value = canvasF.value.toDataURL();
-      resolve(img.value);
+      // resolve(img.value);
+      canvasPic.addEventListener('load', () => {
+        const newCanvas = document.createElement("canvas");
+        const resultLeft = Math.max(left - 10,0);
+        const resultTop = Math.max(top - 10, 0);
+        const resultRight = Math.min(right + 10, canvasF.value!.width);
+        const resultBottom = Math.min(bottom + 10, canvasF.value!.height);
+        const width = resultRight - resultLeft;
+        const height = resultBottom - resultTop;
+        newCanvas.width = width;
+        newCanvas.height = height;
+        const newCtx = newCanvas.getContext("2d") as CanvasRenderingContext2D;
+        newCtx.fillStyle = props.bgc ?? "#f5f5f5";
+        newCtx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+        newCtx.fill();
+        newCtx.drawImage(canvasPic, resultLeft, resultTop, width, height, 0, 0, width, height);
+        img.value = newCanvas.toDataURL();
+        canvasPic.remove();
+        resolve(img.value);
+      });
       return;
     }
     reject('获取canvas对象失败！');

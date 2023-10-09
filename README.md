@@ -11,9 +11,9 @@
 |:---------:|:------:|:--------------------------------------------------------------:|:----:|:-----------:|
 |  height   |  盒子高度  |                             number                             |  否   |  pc时有效：500  |
 |  zIndex   |  盒子层级  |                             number                             |  否   |     101     |
-|    bgc    |  背景色   |                             string                             |  否   | `'#f5f5f5'` |
 | penColor  |  画笔颜色  |                             string                             |  否   |  `'#000'`   |
 | penWidth  |  画笔宽度  |                         string丨number                          |  否   |      2      |
+|    bgc    |  背景色   |                             string                             |  否   | `'#f5f5f5'` |
 | btnHeight | 按钮组的高度 |                             number                             |  否   |     54      |
 |   btns    |  按钮组   | Array<`'back'丨'redo'丨'clear'`>丨`'back'丨'redo'丨'clear'`丨`'all'` |  否   |   `'all'`   |
 
