@@ -654,6 +654,18 @@
     "@volar/typescript" "~1.10.0"
     "@vue/language-core" "1.8.8"
 
+"@yuke_2022/yk-sign-pad@^0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@yuke_2022/yk-sign-pad/-/yk-sign-pad-0.1.7.tgz#3e213f6633462145f84b19ac5dbce0a74a758c8b"
+  integrity sha512-kjYrf27dJnzH3K9NUllzdykq7k5FmXctFNlMYj9Vy35yiJA9Zlv9tOMCuRc4hoX4JRJR7C92e9lTAHX6UVa9KA==
+  dependencies:
+    amfe-flexible "^2.2.1"
+    lodash "^4.17.21"
+    postcss "^8.4.14"
+    postcss-pxtorem "^6.0.0"
+    sass "^1.52.3"
+    ts-node "^10.8.1"
+
 acorn-walk@^8.1.1:
   version "8.2.0"
   resolved "https://registry.npmjs.org/acorn-walk/-/acorn-walk-8.2.0.tgz"

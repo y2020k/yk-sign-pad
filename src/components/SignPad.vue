@@ -414,7 +414,7 @@ function generatePicture() {
       canvasPic.src = points.value[step.value];
       img.value = canvasF.value.toDataURL();
       // resolve(img.value);
-      canvasPic.addEventListener('load', () => {
+      const handLoad = () => {
         const newCanvas = document.createElement("canvas");
         const resultLeft = Math.max(left - 10,0);
         const resultTop = Math.max(top - 10, 0);
@@ -430,9 +430,11 @@ function generatePicture() {
         newCtx.fill();
         newCtx.drawImage(canvasPic, resultLeft, resultTop, width, height, 0, 0, width, height);
         img.value = newCanvas.toDataURL();
+        canvasPic.removeEventListener('load', handLoad);
         canvasPic.remove();
         resolve(img.value);
-      });
+      }
+      canvasPic.addEventListener('load', handLoad);
       return;
     }
     reject('获取canvas对象失败！');
@@ -521,7 +523,7 @@ onMounted(() => {
 .canvasBox {
   width: 100%;
   height: 100%;
-  background-color: red;
+  //background-color: red;
 
   canvas {
     width: 100%;
