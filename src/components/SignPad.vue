@@ -86,7 +86,7 @@ function initCanvas() {
   let canvas = canvasF.value;
   nextTick(() => {
     if (canvas && canvasHW.value) {
-      isRotate.value = canvasHW.value.offsetWidth <= canvasHW.value.offsetHeight;
+      isRotate.value = canvasHW.value.offsetWidth <= 1024;
       if (isRotate.value) {
         // 获取画布的高度
         canvas.height = canvasHW.value.offsetWidth - props.btnHeight + 1;
@@ -119,7 +119,7 @@ function mouseDown(ev: MouseEvent) {
   if (ev) {
     let obj = {
       x: ev.offsetX,
-      y: ev.offsetY
+      y: ev.offsetY,
     };
     startX.value = obj.x;
     startY.value = obj.y;
@@ -145,7 +145,7 @@ function mouseMove(ev: MouseEvent) {
   if (isDown.value) {
     let obj = {
       x: ev.offsetX,
-      y: ev.offsetY
+      y: ev.offsetY,
     };
     moveY.value = obj.y;
     moveX.value = obj.x;
@@ -172,7 +172,7 @@ function mouseOut(ev: MouseEvent) {
   if (isDown.value) {
     let obj = {
       x: ev.offsetX,
-      y: ev.offsetY
+      y: ev.offsetY,
     };
     moveY.value = obj.y;
     moveX.value = obj.x;
@@ -199,7 +199,7 @@ function mouseEnter(ev: MouseEvent) {
   if (isDown.value) {
     let obj = {
       x: ev.offsetX,
-      y: ev.offsetY
+      y: ev.offsetY,
     };
     startY.value = obj.y;
     startX.value = obj.x;
@@ -283,7 +283,7 @@ function touchMove(ev: TouchEvent) {
   if (isDown.value && ev.changedTouches[0]) {
     let obj = {
       y: (stage_info.value?.width ?? 0) - ev.changedTouches[0].clientX + (stage_info.value?.left ?? 0),
-      x: ev.changedTouches[0].clientY - (stage_info.value?.top ?? 0)
+      x: ev.changedTouches[0].clientY - (stage_info.value?.top ?? 0),
     };
     moveY.value = obj.y;
     moveX.value = obj.x;
@@ -316,7 +316,7 @@ function touchEnd(ev: TouchEvent) {
   if (ev && ev.changedTouches[0]) {
     let obj = {
       y: (stage_info.value?.width ?? 0) - ev.changedTouches[0].clientX + (stage_info.value?.left ?? 0),
-      x: ev.changedTouches[0].clientY - (stage_info.value?.top ?? 0)
+      x: ev.changedTouches[0].clientY - (stage_info.value?.top ?? 0),
     };
     canvasTxt.value.beginPath();
     canvasTxt.value.moveTo(startX.value, startY.value);
@@ -342,6 +342,7 @@ function touchEnd(ev: TouchEvent) {
 
 // 撤回
 function handleGoBack() {
+  if (step.value<0) return;
   step.value--;
   if (isClear.value) {
     isClear.value = false;
@@ -364,6 +365,7 @@ function handleGoBack() {
 
 // 重做
 function handleRedo() {
+  if (step.value>=maxStep.value) return;
   step.value++;
   canvasTxt.value?.clearRect(0, 0, canvasF.value?.width, canvasF.value?.height);
   let canvasPic = new Image();
@@ -382,6 +384,7 @@ function handleRedo() {
 
 // 清空
 function handleOverwrite() {
+  if (step.value===-1||isClear.value) return;
   if (!isClear.value) {
     isClear.value = true;
     step.value++;
@@ -416,7 +419,7 @@ function generatePicture() {
       // resolve(img.value);
       const handLoad = () => {
         const newCanvas = document.createElement("canvas");
-        const resultLeft = Math.max(left - 10,0);
+        const resultLeft = Math.max(left - 10, 0);
         const resultTop = Math.max(top - 10, 0);
         const resultRight = Math.min(right + 10, canvasF.value!.width);
         const resultBottom = Math.min(bottom + 10, canvasF.value!.height);
@@ -433,7 +436,7 @@ function generatePicture() {
         canvasPic.removeEventListener('load', handLoad);
         canvasPic.remove();
         resolve(img.value);
-      }
+      };
       canvasPic.addEventListener('load', handLoad);
       return;
     }
@@ -462,31 +465,39 @@ onMounted(() => {
       ></canvas>
     </div>
     <div class="btn-group">
-      <a-button
-        v-show="checkType('back')"
-        :disabled="step<0"
-        class="back"
-        @click="handleGoBack"
-      >撤回
-      </a-button>
-      <a-button
-        v-show="checkType('redo')"
-        :disabled="step>=maxStep"
-        class="redo"
-        @click="handleRedo"
+      <slot
+        :generatePicture="generatePicture"
+        :handleGoBack="handleGoBack"
+        :handleOverwrite="handleOverwrite"
+        :handleRedo="handleRedo"
+        name="custom-btn-group"
       >
-        重做
-      </a-button>
-      <a-button
-        v-show="checkType('clear')"
-        :disabled="step===-1||isClear"
-        class="rewrite"
-        @click="handleOverwrite"
-      >清空
-      </a-button>
-      <a-button v-show="checkType" class="submit" @click="generatePicture">
-        确认
-      </a-button>
+        <a-button
+          v-show="checkType('back')"
+          :disabled="step<0"
+          class="back"
+          @click="handleGoBack"
+        >撤回
+        </a-button>
+        <a-button
+          v-show="checkType('redo')"
+          :disabled="step>=maxStep"
+          class="redo"
+          @click="handleRedo"
+        >
+          重做
+        </a-button>
+        <a-button
+          v-show="checkType('clear')"
+          :disabled="step===-1||isClear"
+          class="rewrite"
+          @click="handleOverwrite"
+        >清空
+        </a-button>
+        <a-button v-show="checkType" class="submit" @click="generatePicture">
+          确认
+        </a-button>
+      </slot>
     </div>
     <!--    <img
           :src="img"
@@ -518,7 +529,6 @@ onMounted(() => {
     margin: 6px 12px 6px 0;
   }
 }
-
 
 .canvasBox {
   width: 100%;
