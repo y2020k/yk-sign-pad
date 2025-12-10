@@ -15,7 +15,8 @@ import { nextTick, onMounted, ref, shallowRef } from "vue";
 type btnType = 'back' | 'redo' | 'clear';
 
 const props = withDefaults(defineProps<{
-  height?: number; // PC端默认高度500
+  height?: number; // 正置默认高度500，侧置时不生效
+  isRotate?: boolean; // 是否侧置
   btnHeight?: number; // 按钮工具栏高度默认54
   penColor?: string; // 画笔颜色
   penWidth?: number | string; // 画笔宽度
@@ -24,6 +25,7 @@ const props = withDefaults(defineProps<{
   btns?: btnType[] | btnType | 'all'; // 使用哪些按钮
 }>(), {
   height: 500,
+  isRotate: false,
   btnHeight: 54,
   penColor: "#000",
   penWidth: 2,
@@ -67,8 +69,6 @@ const isDown = ref(false);
 // const strokeStyle = ref('#000');
 // 画笔宽度
 // const lineWidth = ref(2);
-// 是否旋转
-const isRotate = ref(false);
 // 当前步数
 let step = ref(-1);
 // 最大步数记录
@@ -86,8 +86,8 @@ function initCanvas() {
   let canvas = canvasF.value;
   nextTick(() => {
     if (canvas && canvasHW.value) {
-      isRotate.value = canvasHW.value.offsetWidth <= 1024;
-      if (isRotate.value) {
+      // console.log();
+      if (props.isRotate) {
         // 获取画布的高度
         canvas.height = canvasHW.value.offsetWidth - props.btnHeight + 1;
         // 获取画布的宽度
@@ -342,7 +342,7 @@ function touchEnd(ev: TouchEvent) {
 
 // 撤回
 function handleGoBack() {
-  if (step.value<0) return;
+  if (step.value < 0) return;
   step.value--;
   if (isClear.value) {
     isClear.value = false;
@@ -365,7 +365,7 @@ function handleGoBack() {
 
 // 重做
 function handleRedo() {
-  if (step.value>=maxStep.value) return;
+  if (step.value >= maxStep.value) return;
   step.value++;
   canvasTxt.value?.clearRect(0, 0, canvasF.value?.width, canvasF.value?.height);
   let canvasPic = new Image();
@@ -384,7 +384,7 @@ function handleRedo() {
 
 // 清空
 function handleOverwrite() {
-  if (step.value===-1||isClear.value) return;
+  if (step.value === -1 || isClear.value) return;
   if (!isClear.value) {
     isClear.value = true;
     step.value++;
@@ -450,7 +450,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="SignPad">
+  <div :class="{unRotate: !isRotate}" class="SignPad">
     <div ref="canvasHW" class="canvasBox">
       <canvas
         id="SignPad"
@@ -508,21 +508,26 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .SignPad {
-  position: relative;
-  width: 100%;
-  height: calc(v-bind(height) * 1px);
-  z-index: v-bind(zIndex);
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
 
   .btn-group {
     position: absolute;
     bottom: 0;
-    width: 100%;
+    left: 0;
+    top: 0;
+    width: 100vh;
     height: calc(v-bind(btnHeight) * 1px);
     background-color: #fff;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     z-index: 10;
+    transform-origin: 0 0;
+    transform: rotateZ(90deg) translateY(-100%);
   }
 
   .back, .redo, .rewrite, .submit {
@@ -531,44 +536,47 @@ onMounted(() => {
 }
 
 .canvasBox {
-  width: 100%;
-  height: 100%;
-  //background-color: red;
+  transform: rotateZ(90deg);
+  width: 100vw;
+  height: 100vh;
 
   canvas {
-    width: 100%;
-    height: calc(100% - v-bind(btnHeight) * 1px + 1px);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: auto;
+    height: auto;
     background-color: #f5f5f5;
+    transform: translate(-50%, calc(-50% - v-bind(btnHeight) * 0.5px));
   }
 }
 
-@media screen and (max-width: 1024px) {
-  .SignPad {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
+.SignPad.unRotate {
+  position: relative;
+  width: 100%;
+  height: calc(v-bind(height) * 1px);
+  z-index: v-bind(zIndex);
 
-    .btn-group {
-      left: 0;
-      top: 0;
-      width: 100vh;
-      transform-origin: 0 0;
-      transform: rotateZ(90deg) translateY(-100%);
-    }
+  .btn-group {
+    left: auto;
+    top: auto;
+    width: 100%;
+    transform-origin: center center;
+    transform: none;
   }
 
   .canvasBox {
-    transform: rotateZ(90deg);
+    transform: none;
+    width: 100%;
+    height: 100%;
 
     canvas {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: auto;
-      height: auto;
-      transform: translate(-50%, calc(-50% - v-bind(btnHeight) * 0.5px));
+      position: relative;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: calc(100% - v-bind(btnHeight) * 1px + 1px);
+      transform: none;
     }
   }
 }
