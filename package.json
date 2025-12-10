@@ -59,8 +59,9 @@
   "devDependencies": {
     "@types/node": "^18.19.130",
     "@vitejs/plugin-vue": "^2.3.4",
+    "@vue/runtime-core": "^3.5.25",
     "ant-design-vue": "3.2.20",
-    "typescript": "^5.9.3",
+    "typescript": "5.4.5",
     "unplugin-auto-import": "^0.13.0",
     "unplugin-icons": "^0.15.3",
     "unplugin-vue-components": "^0.23.0",
