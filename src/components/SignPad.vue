@@ -513,6 +513,7 @@ onMounted(() => {
   top: 0;
   width: 100vw;
   height: 100vh;
+  z-index: v-bind(zIndex);
 
   .btn-group {
     position: absolute;
@@ -555,7 +556,6 @@ onMounted(() => {
   position: relative;
   width: 100%;
   height: calc(v-bind(height) * 1px);
-  z-index: v-bind(zIndex);
 
   .btn-group {
     left: auto;
